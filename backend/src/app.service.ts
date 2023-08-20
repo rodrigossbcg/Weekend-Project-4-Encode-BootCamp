@@ -44,10 +44,23 @@ export class AppService {
     return this.contract.getVotes(address);
   }
 
-  async  mintTokens(address: string) {
-    const amount = 1n;
-    const tx = await this.contract.mintTokens(address, amount);
-    const reciept = tx.wait();
-    return {"hash": true}
+  async mintTokens(address: string, amount: string): Promise<{hash: boolean}> {
+    const tx = await this.contract.mint(address, amount);
+    await tx.wait();
+    return {"hash": true};
+  }
+
+  // Delegate voting rights to another address
+  async delegate(address: string): Promise<{hash: boolean}> {
+    const tx = await this.contract.delegate(address);
+    await tx.wait();
+    return {"hash": true};
+  }
+
+   
+  async transferTokens(to: string, amount: string): Promise<{hash: boolean}> {
+    const tx = await this.contract.transfer(to, amount);
+    await tx.wait();
+    return {"hash": true};
   }
 }

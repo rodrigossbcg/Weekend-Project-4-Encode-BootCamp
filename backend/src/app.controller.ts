@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post , HttpException, HttpStatus} from '@nestjs/common';
 import { AppService } from './app.service';
 import { MintTokenDTO } from './dtos/mintToken.dto';
 
@@ -32,12 +32,22 @@ export class AppController {
   }
 
 
-  @Post("mint-tokens/:address")
-  async mintToken(
-    @Body() body: MintTokenDTO) {
-      console.log({body})
-      return await this.appService.mintTokens(
-        body.address)
+  @Post('mint')
+    async mintToken(@Body('address') address: string, @Body('amount') amount: string): Promise<{hash: boolean}> {
+       return await this.appService.mintTokens(address, amount);
+      
+    }
+
+    @Post('delegate')
+    async delegate(@Body('address') address: string, @Body('delegatee') delegatee: string): Promise<{hash: boolean}> {
+        return await this.appService.delegate(delegatee);
+   
+    }
+
+    @Post('transfer-tokens')
+    async transferTokens(@Body() transferTokensDto: MintTokenDTO): Promise<{hash: boolean}> {
+      const { to, amount } = transferTokensDto;
+      return this.appService.transferTokens(to, amount);
     }
   
 }
