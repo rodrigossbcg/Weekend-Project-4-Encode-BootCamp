@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import styles from "./instructionsComponent.module.css";
 import { useAccount, useBalance, useContractRead, useNetwork, useSignMessage } from 'wagmi';
 import TransferTokensComponent from "../instructionsComponent/navigation/extra_components/TransferTokensComponent"
+import MintTokenButton from "../instructionsComponent/navigation/extra_components/MintComponent"
 import DelegateComponent from "../instructionsComponent/navigation/extra_components/DelegateComponent"
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -9,11 +10,42 @@ import DelegateComponent from "../instructionsComponent/navigation/extra_compone
 
 export default function InstructionsComponent() {
   return (
-    <div className={styles.container}>
-      <h1>MyDapp</h1>
-      <WalletInfo></WalletInfo>
+    <div className={styles.row}>
+      <div className={styles.column}>
+        <ContractInfo></ContractInfo>
+      </div>
+      <div className={styles.column}>
+        <WalletInfo></WalletInfo>
+      </div>
     </div>
   );
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+function ContractInfo() {
+  const { address, isConnecting, isDisconnected } = useAccount();
+
+  if (address) {
+    return (
+      <div>
+        <ERC20Votes address={address}></ERC20Votes>
+        <br/>
+        <MintTokenButton address={address}></MintTokenButton>
+        <br/>
+        <br/>
+        <TransferTokensComponent senderAddress={address}></TransferTokensComponent>
+        <br/>
+        <br/>
+        <DelegateComponent delegatorAddress={address}></DelegateComponent>
+      </div>
+    );
+  }
+
+  if (isConnecting) return <p>Loading...</p>;
+  if (isDisconnected) return <p>Connecting to contract ERC-20 Votes</p>;
+  return null;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -29,10 +61,6 @@ function WalletInfo() {
         <p>Address: {address}</p>
         <p>Connected to the network {chain?.name}</p>
         <WalletBalance address={address}></WalletBalance>
-        <ERC20Votes address={address}></ERC20Votes>
-        <MintTokenButton address={address}></MintTokenButton>
-        <TransferTokensComponent senderAddress={address}></TransferTokensComponent>
-        <DelegateComponent delegatorAddress={address}></DelegateComponent>
       </div>
     );
   }
@@ -42,8 +70,11 @@ function WalletInfo() {
   return null;
 }
 
-function WalletBalance({ address }: { address: string }) {
-  const { data, isError, isLoading } = useBalance({ address });
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+function WalletBalance(params: {address: `0x${string}`}) {
+  const { data, isError, isLoading } = useBalance({address: params.address});
 
   if (isError) return <div>An error occurred</div>;
   if (isLoading) return <div>Fetching result</div>;
@@ -54,12 +85,12 @@ function WalletBalance({ address }: { address: string }) {
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-function ERC20Votes({ address }: { address: string }) {
+function ERC20Votes(params: { address: string }) {
   return (
     <div>
       <p>ERC-20 Votes Address: {ERC20VotesAddress()}</p>
-      <p>Balance: {Balance(address)}</p>
-      <p>Voting Power: {Votes(address)}</p>
+      <p>Balance: {Balance(params.address)}</p>
+      <p>Voting Power: {Votes(params.address)}</p>
     </div>
   );
 }
@@ -125,61 +156,8 @@ function Votes(address: string) {
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
-///////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 type Props = {
   address: string;
 };
-
-// nao sei se teremos de usar UseTransactions
-const MintTokenButton: React.FC<Props> = ({ address }) => {
-  const [isMinting, setIsMinting] = useState(false);
-  const [isSuccess, setIsSuccess] = useState(false);
-  const [shouldMint, setShouldMint] = useState(false);
-
-  useEffect(() => {
-      if (shouldMint) {
-          const mintTokens = async () => {
-              setIsMinting(true);
-              try {
-                  const response = await fetch('http://localhost:3001/mint-tokens', {
-                      method: 'POST',
-                      headers: {
-                          'Content-Type': 'application/json',
-                      },
-                      body: JSON.stringify({ address, amount: 1 }),
-                  });
-
-                  const data = await response.json();
-
-                  if (data.hash) {
-                      setIsSuccess(true);
-                  } else {
-                      alert("Failed ");
-                  }
-              } catch (error) {
-                  alert("error minting tokens.");
-                  console.error("Error minting tokens:", error);
-              } finally {
-                  setIsMinting(false);
-              }
-          };
-
-          mintTokens();
-          setShouldMint(false); // reset
-      }
-  }, [shouldMint, address]);
-
-  return (
-      <div>
-          {isSuccess ? (
-              <p>Tokens minted successfully!</p>
-          ) : (
-              <button onClick={() => setShouldMint(true)} disabled={isMinting}>
-                  {isMinting ? 'Minting...' : 'Mint Tokens'}
-              </button>
-          )}
-      </div>
-  );
-};
-

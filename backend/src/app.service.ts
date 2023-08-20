@@ -18,7 +18,6 @@ export class AppService {
   contract: ethers.Contract;
 
   constructor() {
-
     this.provider = setupProvider();
     this.wallet = new ethers.Wallet(process.env.PRIVATE_KEY, this.provider);
     this.contract = new ethers.Contract(ERC20VotesAddress, MyTokenJson["abi"], this.wallet);
@@ -44,23 +43,35 @@ export class AppService {
     return this.contract.getVotes(address);
   }
 
-  async mintTokens(address: string, amount: string): Promise<{hash: boolean}> {
-    const tx = await this.contract.mint(address, amount);
-    await tx.wait();
-    return {"hash": true};
+  async mintTokens(address: string, amount: Number): Promise<string> {
+    try {
+      const tx = await this.contract.mint(address, amount);
+      const txReciept = await tx.wait();
+      return txReciept.hash;
+    } catch (error) {
+      return error['info']['error']['message'];
+    }
+    
   }
 
-  // Delegate voting rights to another address
-  async delegate(address: string): Promise<{hash: boolean}> {
-    const tx = await this.contract.delegate(address);
-    await tx.wait();
-    return {"hash": true};
+  async delegate(address: string): Promise<string> {
+    try {
+      const tx = await this.contract.delegate(address);
+      const txReciept = await tx.wait();
+      return txReciept.hash;
+    } catch (error) {
+      return error['info']['error']['message'];
+    }
   }
 
-   
-  async transferTokens(to: string, amount: string): Promise<{hash: boolean}> {
-    const tx = await this.contract.transfer(to, amount);
-    await tx.wait();
-    return {"hash": true};
+  async transferTokens(to: string, amount: Number): Promise<string> {
+    try {
+      const tx = await this.contract.transfer(to, amount); 
+      const txReciept = await tx.wait();
+      return txReciept.hash;
+    } catch (error) {
+      return error['info']['error']['message'];
+    }
   }
+
 }

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import styles from "../../instructionsComponent.module.css";
 
 type Props = {
     senderAddress: string;
@@ -66,7 +67,7 @@ const TransferTokensComponent: React.FC<Props> = ({ senderAddress }) => {
                         value={amount}
                         onChange={(e) => setAmount(Number(e.target.value))}
                     />
-                    <button onClick={() => setShouldTransfer(true)} disabled={isTransferring}>
+                    <button className={styles.button} onClick={() => setShouldTransfer(true)} disabled={isTransferring}>
                         {isTransferring ? 'Transferring...' : 'Transfer Tokens'}
                     </button>
                 </div>

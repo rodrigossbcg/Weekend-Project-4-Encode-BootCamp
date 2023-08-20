@@ -1,6 +1,6 @@
-import { Body, Controller, Get, Param, Post , HttpException, HttpStatus} from '@nestjs/common';
+import { Controller, Get, Param, Post, Query} from '@nestjs/common';
 import { AppService } from './app.service';
-import { MintTokenDTO } from './dtos/mintToken.dto';
+
 
 @Controller()
 export class AppController {
@@ -31,23 +31,19 @@ export class AppController {
     return this.appService.getVotes(address);
   }
 
+  @Get('delegate/:address')
+  async delegate(@Param('address') address: string): Promise<string> {
+      return await this.appService.delegate(address);
+  }
+
+  @Get('transfer-tokens/:address/:amount')
+  async transferTokens(@Param('address') address: string, @Param('amount') amount: number): Promise<string> {
+    return this.appService.transferTokens(address, amount);
+  }
 
   @Post('mint')
-    async mintToken(@Body('address') address: string, @Body('amount') amount: string): Promise<{hash: boolean}> {
-       return await this.appService.mintTokens(address, amount);
-      
-    }
+  async mintToken(@Query('address') address: string, @Query('amount') amount: number): Promise<string> {
+      return await this.appService.mintTokens(address, amount);
+  }
 
-    @Post('delegate')
-    async delegate(@Body('address') address: string, @Body('delegatee') delegatee: string): Promise<{hash: boolean}> {
-        return await this.appService.delegate(delegatee);
-   
-    }
-
-    @Post('transfer-tokens')
-    async transferTokens(@Body() transferTokensDto: MintTokenDTO): Promise<{hash: boolean}> {
-      const { to, amount } = transferTokensDto;
-      return this.appService.transferTokens(to, amount);
-    }
-  
 }

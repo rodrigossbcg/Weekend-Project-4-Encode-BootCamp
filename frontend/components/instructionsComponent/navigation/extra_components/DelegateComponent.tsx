@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
+import styles from "../../instructionsComponent.module.css";
 
 type Props = {
     delegatorAddress: string; // senderAddress replaced by delegatorAddress for clarity
 };
 
 const DelegateComponent: React.FC<Props> = ({ delegatorAddress }) => {
+
     const [isDelegating, setIsDelegating] = useState(false);
     const [isSuccess, setIsSuccess] = useState(false);
     const [shouldDelegate, setShouldDelegate] = useState(false);
@@ -12,41 +14,43 @@ const DelegateComponent: React.FC<Props> = ({ delegatorAddress }) => {
 
     useEffect(() => {
         if (shouldDelegate) {
-            const delegateTokens = async () => {
-                setIsDelegating(true);
-                try {
-                    const response = await fetch('http://localhost:3001/delegate', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
-                        body: JSON.stringify({
-                            delegator: delegatorAddress,
-                            delegatee: delegatee
-                        }),
-                    });
 
-                    const data = await response.json();
+            if (delegatee.length == 32) {
+                const delegateTokens = async () => {
 
-                    if (data.hash) {
-                        setIsSuccess(true);
-                    } else {
-                        alert("Failed to delegate.");
+                    setIsDelegating(true);
+
+                    try {
+                        const response = await fetch(`http://localhost:3001/delegate/'${delegatee}`);
+                        const data = await response.json();
+                        console.log(data);
+                        if (data.hash) {setIsSuccess(true);}
+                        else {alert("Failed to delegate.");}
                     }
-                } catch (error) {
-                    alert("An error occurred while delegating.");
-                    console.error("Error delegating:", error);
-                } finally {
-                    setIsDelegating(false);
-                }
-            };
+                    
+                    catch (error) {
+                        alert("An error occurred while delegating.");
+                        console.error("Error delegating:", error);
+                    }
 
-            delegateTokens();
-            setShouldDelegate(false); // reset trigger
+                    finally {
+                        console.log("hello2")
+                        setIsDelegating(false);
+                    }
+                };
+
+                delegateTokens();
+                setShouldDelegate(false);
+            }
+
+            else {
+                alert("Must insert a valid address.");
+            }
         }
     }, [shouldDelegate, delegatorAddress, delegatee]);
 
     return (
+
         <div>
             {isSuccess ? (
                 <p>Delegation successful!</p>
@@ -58,7 +62,11 @@ const DelegateComponent: React.FC<Props> = ({ delegatorAddress }) => {
                         value={delegatee}
                         onChange={(e) => setDelegatee(e.target.value)}
                     />
-                    <button onClick={() => setShouldDelegate(true)} disabled={isDelegating}>
+                    <button className={styles.button} onClick={() =>  {
+                        setShouldDelegate(true);
+                        setIsDelegating(true);
+                    }}
+                    disabled={isDelegating}>
                         {isDelegating ? 'Delegating...' : 'Delegate'}
                     </button>
                 </div>

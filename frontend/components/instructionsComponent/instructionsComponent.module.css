@@ -8,6 +8,27 @@
     
 }
 
+/* Create two equal columns that floats next to each other */
+.column {
+	float: left;
+	width: 40%;
+	background-color: aliceblue;
+	border: solid 2px darkblue;
+	border-radius: 10px;
+	padding: 10px;
+	padding: 5%;
+	margin: 5%;
+  }
+  
+  /* Clear floats after the columns */
+  .row:after {
+	content: "";
+	width: 70%;
+	margin: auto;
+	display: table;
+	clear: both;
+  }
+  
 .header_container{
 
 	display: flex;
@@ -50,9 +71,6 @@ border-radius: 8px;
 	margin-left: .3rem;
 }
 
-
-
-
 .buttons_container{
 	display: flex;
 	width: 80%;
@@ -67,14 +85,14 @@ border-radius: 8px;
 flex-direction: row;
 align-items: center;
 justify-content: center;
+color: white;
 
 padding: 24px 32px;
 gap: 12px;
 
-width: 392px;
-height: 80px;
-
-background: rgba(0, 0, 0, 0.9);
+width: 150px;
+height: 60px;
+background: darkblue;
 /* Grayscale/Metal */
 box-shadow: 2px 2px 3px rgb(142, 142, 142);
 border-radius: 12px;
