@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { ethers } from 'ethers';
 import * as MyTokenJson from "./assets/MyToken.json";
-
+import { HttpException, HttpStatus } from '@nestjs/common';
 const ERC20VotesAddress = "0xbf27B5F3B2F838212D42c3035D68684Cdd6Ae869";
 const TokenBallotAddress = "0x14d3f34208c82A3458f82Dd7CdBe5CE2bd9B39ce";
 
@@ -68,6 +68,8 @@ export class AppService {
     try {
       const tx = await this.contract.transfer(to, amount); 
       const txReciept = await tx.wait();
+      console.log(txReciept);
+      console.log(txReciept.hash);
       return txReciept.hash;
     } catch (error) {
       return error['info']['error']['message'];

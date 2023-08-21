@@ -17,20 +17,10 @@ const TransferTokensComponent: React.FC<Props> = ({ senderAddress }) => {
             const transferTokens = async () => {
                 setIsTransferring(true);
                 try {
-                    const response = await fetch('http://localhost:3001/transfer-tokens', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
-                        body: JSON.stringify({
-                            sender: senderAddress,
-                            recipient: recipient,
-                            amount: amount
-                        }),
-                    });
-
-                    const data = await response.json();
-
+                    const res = await fetch(`http://localhost:3001/transfer-tokens/${recipient}/${amount}`)
+                    
+                    //const data = await res.text()
+                    const data = await res.json();
                     if (data.hash) {
                         setIsSuccess(true);
                     } else {
@@ -43,7 +33,6 @@ const TransferTokensComponent: React.FC<Props> = ({ senderAddress }) => {
                     setIsTransferring(false);
                 }
             };
-
             transferTokens();
             setShouldTransfer(false); // reset trigger
         }
@@ -51,29 +40,28 @@ const TransferTokensComponent: React.FC<Props> = ({ senderAddress }) => {
 
     return (
         <div>
-            {isSuccess ? (
-                <p>Tokens transferred successfully!</p>
-            ) : (
-                <div>
-                    <input 
-                        type="text" 
-                        placeholder="Recipient Address" 
-                        value={recipient}
-                        onChange={(e) => setRecipient(e.target.value)}
-                    />
-                    <input 
-                        type="number" 
-                        placeholder="Amount" 
-                        value={amount}
-                        onChange={(e) => setAmount(Number(e.target.value))}
-                    />
-                    <button className={styles.button} onClick={() => setShouldTransfer(true)} disabled={isTransferring}>
-                        {isTransferring ? 'Transferring...' : 'Transfer Tokens'}
-                    </button>
-                </div>
-            )}
+            <div>
+                <input 
+                    type="text" 
+                    placeholder="Recipient Address" 
+                    value={recipient}
+                    onChange={(e) => setRecipient(e.target.value)}
+                />
+                <input 
+                    type="number" 
+                    placeholder="Amount" 
+                    value={amount}
+                    onChange={(e) => setAmount(Number(e.target.value))}
+                />
+                <button className={styles.button} onClick={() => setShouldTransfer(true)} 
+                        disabled={isTransferring}>
+                    {isTransferring ? 'Transferring...' : 'Transfer Tokens'}
+                </button>
+            </div>
+            {isSuccess ? (<p>Tokens transferred successfully!</p>) : <p></p>}
         </div>
     );
 };
 
 export default TransferTokensComponent;
+

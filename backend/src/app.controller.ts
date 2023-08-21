@@ -1,6 +1,6 @@
-import { Controller, Get, Param, Post, Query} from '@nestjs/common';
+import { Controller, Get, Param, Post, Query, Req} from '@nestjs/common';
 import { AppService } from './app.service';
-
+import { HttpException, HttpStatus } from '@nestjs/common';
 
 @Controller()
 export class AppController {
@@ -33,12 +33,13 @@ export class AppController {
 
   @Get('delegate/:address')
   async delegate(@Param('address') address: string): Promise<string> {
-      return await this.appService.delegate(address);
+    return await this.appService.delegate(address);
   }
 
   @Get('transfer-tokens/:address/:amount')
   async transferTokens(@Param('address') address: string, @Param('amount') amount: number): Promise<string> {
-    return this.appService.transferTokens(address, amount);
+    //console.log(`Received request: ${request.method}, ${address}, ${amount } `)
+    return await this.appService.transferTokens(address, amount);
   }
 
   @Post('mint')

@@ -7,9 +7,10 @@ type Props = {
 
 const MintTokenButton: React.FC<Props> = ({ address }) => {
     const [isMinting, setIsMinting] = useState(false);
-    const [isSuccess, setIsSuccess] = useState(false);
+    const [message, setMessage] = useState('');
     const [shouldMint, setShouldMint] = useState(false);
-  
+    const [amount, setAmount] = useState(0);
+
     useEffect(() => {
         if (shouldMint) {
             const mintTokens = async () => {
@@ -24,9 +25,8 @@ const MintTokenButton: React.FC<Props> = ({ address }) => {
                     });
   
                     const data = await response.json();
-  
                     if (data.hash) {
-                        setIsSuccess(true);
+                        setMessage('Successfully Minted');
                     } else {
                         alert("Failed ");
                     }
@@ -37,23 +37,25 @@ const MintTokenButton: React.FC<Props> = ({ address }) => {
                     setIsMinting(false);
                 }
             };
-  
             mintTokens();
             setShouldMint(false); // reset
         }
     }, [shouldMint, address]);
-  
     return (
         <div>
-            {isSuccess ? (
-                <p>Tokens minted successfully!</p>
-            ) : (
-                <button className={styles.button} onClick={() => setShouldMint(true)} disabled={isMinting}>
-                    {isMinting ? 'Minting...' : 'Mint Tokens'}
-                </button>
-            )}
+            <input 
+                type="number" 
+                placeholder="Amount" 
+                value={amount}
+                onChange={(e) => setAmount(Number(e.target.value))}
+            />
+            <button className={styles.button} onClick={() => setShouldMint(true)} disabled={isMinting}>
+                {isMinting ? 'Minting...' : 'Mint Tokens'}
+            </button>
+            {message ? <p>Tokens minted successfully!</p> : <p></p>}
+            <p>{message}</p>
         </div>
     );
-  };
+};
   
   export default MintTokenButton;

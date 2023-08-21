@@ -43,8 +43,8 @@ function ContractInfo() {
     );
   }
 
-  if (isConnecting) return <p>Loading...</p>;
-  if (isDisconnected) return <p>Connecting to contract ERC-20 Votes</p>;
+  if (isConnecting) return <div><p>Loading...</p></div>;
+  if (isDisconnected) return <div><p>Connecting to contract ERC-20 Votes</p></div>;
   return null;
 }
 
@@ -65,9 +65,9 @@ function WalletInfo() {
     );
   }
 
-  if (isConnecting) return <p>Loading...</p>;
-  if (isDisconnected) return <p>Wallet disconnected</p>;
-  return null;
+  if (isConnecting) return <div> <p>Loading...</p></div>;
+  if (isDisconnected) return <div><p>Wallet disconnected</p></div>;
+  return <div></div>;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -78,8 +78,8 @@ function WalletBalance(params: {address: `0x${string}`}) {
 
   if (isError) return <div>An error occurred</div>;
   if (isLoading) return <div>Fetching result</div>;
-  if (data) return <p>Balance: {data?.formatted} {data?.symbol}</p>;
-  return null;
+  if (data) return <div><p>Balance: {data?.formatted} {data?.symbol}</p></div>;
+  return <div></div>;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
