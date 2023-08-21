@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-
+import styles from "../../instructionsComponent.module.css";
 
 type Props = {
     delegatorAddress: string; // senderAddress replaced by delegatorAddress for clarity
@@ -7,7 +7,7 @@ type Props = {
 
 const DelegateComponent: React.FC<Props> = ({ delegatorAddress }) => {
     const [isDelegating, setIsDelegating] = useState(false);
-    const [isSuccess, setIsSuccess] = useState(false);
+    const [TxHash, setTxHash] = useState('');
     const [shouldDelegate, setShouldDelegate] = useState(false);
     const [delegaTo, setDelegatee] = useState<string>('');
 
@@ -18,9 +18,9 @@ const DelegateComponent: React.FC<Props> = ({ delegatorAddress }) => {
                 try {
                     // Promise <String>
                     const res = await fetch(`http://localhost:3001/delegate/${delegaTo}`)
-                    const message = await res.text()
-                    if (message) {
-                        setIsSuccess(true);
+                    const hash = await res.text()
+                    if (hash) {
+                        setTxHash(hash);
                     } else {
                         alert("Failed to delegate.");
                     }
@@ -39,17 +39,17 @@ const DelegateComponent: React.FC<Props> = ({ delegatorAddress }) => {
     return (
         <div>
             <div>
-                <input 
+                <input className={styles.input} 
                     type="text" 
                     placeholder="Delegatee Address" 
                     value={delegaTo}
                     onChange={(e) => setDelegatee(e.target.value)}
                 />
-                <button onClick={() => setShouldDelegate(true)} disabled={isDelegating}>
+                <button className={styles.button} onClick={() => setShouldDelegate(true)} disabled={isDelegating}>
                     {isDelegating ? 'Delegating...' : 'Delegate'}
                 </button>
             </div>
-            {isSuccess ? (<p>Delegation successful!</p>) : <p></p>}
+            {TxHash ? <p>TxHash: {TxHash}</p> : <p></p>}
         </div>
     );
 };

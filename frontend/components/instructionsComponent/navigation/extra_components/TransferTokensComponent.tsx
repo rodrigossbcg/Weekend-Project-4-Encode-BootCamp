@@ -7,7 +7,7 @@ type Props = {
 
 const TransferTokensComponent: React.FC<Props> = ({ senderAddress }) => {
     const [isTransferring, setIsTransferring] = useState(false);
-    const [isSuccess, setIsSuccess] = useState(false);
+    const [TxHash, setTxHash] = useState('');
     const [shouldTransfer, setShouldTransfer] = useState(false);
     const [recipient, setRecipient] = useState<string>('');
     const [amount, setAmount] = useState<number>(0);
@@ -19,10 +19,10 @@ const TransferTokensComponent: React.FC<Props> = ({ senderAddress }) => {
                 try {
                     const res = await fetch(`http://localhost:3001/transfer-tokens/${recipient}/${amount}`)
                     
-                    //const data = await res.text()
-                    const data = await res.json();
-                    if (data.hash) {
-                        setIsSuccess(true);
+                    const data = await res.text()
+                    //const data = await res.json();
+                    if (data) {
+                        setTxHash(data);
                     } else {
                         alert("Failed to transfer tokens.");
                     }
@@ -41,13 +41,13 @@ const TransferTokensComponent: React.FC<Props> = ({ senderAddress }) => {
     return (
         <div>
             <div>
-                <input 
+                <input className={styles.input} 
                     type="text" 
                     placeholder="Recipient Address" 
                     value={recipient}
                     onChange={(e) => setRecipient(e.target.value)}
                 />
-                <input 
+                <input className={styles.input} 
                     type="number" 
                     placeholder="Amount" 
                     value={amount}
@@ -58,7 +58,7 @@ const TransferTokensComponent: React.FC<Props> = ({ senderAddress }) => {
                     {isTransferring ? 'Transferring...' : 'Transfer Tokens'}
                 </button>
             </div>
-            {isSuccess ? (<p>Tokens transferred successfully!</p>) : <p></p>}
+            {TxHash ? <p>TxHash: {TxHash}</p> : <p></p>}
         </div>
     );
 };

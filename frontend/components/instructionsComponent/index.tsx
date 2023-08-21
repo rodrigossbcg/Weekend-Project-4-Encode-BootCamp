@@ -12,9 +12,11 @@ export default function InstructionsComponent() {
   return (
     <div className={styles.row}>
       <div className={styles.column}>
+        <h1>ERC20Votes</h1>
         <ContractInfo></ContractInfo>
       </div>
       <div className={styles.column}>
+        <h1>Ballot</h1>
         <WalletInfo></WalletInfo>
       </div>
     </div>

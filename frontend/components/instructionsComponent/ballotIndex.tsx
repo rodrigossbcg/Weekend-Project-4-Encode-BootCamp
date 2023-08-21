@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { usePrepareContractWrite, useContractWrite, useWaitForTransaction } from 'wagmi';
-import MyToken from './specs/MyToken.json';
-import Ballot from './specs/Ballot.json';
+import Ballot from '../specs/Ballot.json';
 import { configureChains, createConfig } from 'wagmi'
 import { sepolia } from 'wagmi/chains'
 import { alchemyProvider } from 'wagmi/providers/alchemy'

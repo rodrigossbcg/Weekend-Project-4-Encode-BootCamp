@@ -1,6 +1,8 @@
-import { Controller, Get, Param, Post, Query, Req} from '@nestjs/common';
+import { Controller, Get, Param, Post, Query, Req, Body} from '@nestjs/common';
 import { AppService } from './app.service';
 import { HttpException, HttpStatus } from '@nestjs/common';
+import {MintTokenDTO} from "./dtos/mintToken.dto"
+
 
 @Controller()
 export class AppController {
@@ -38,13 +40,11 @@ export class AppController {
 
   @Get('transfer-tokens/:address/:amount')
   async transferTokens(@Param('address') address: string, @Param('amount') amount: number): Promise<string> {
-    //console.log(`Received request: ${request.method}, ${address}, ${amount } `)
     return await this.appService.transferTokens(address, amount);
   }
 
-  @Post('mint')
-  async mintToken(@Query('address') address: string, @Query('amount') amount: number): Promise<string> {
-      return await this.appService.mintTokens(address, amount);
+  @Post("mint-tokens/")
+  async mintToken(@Body() body: MintTokenDTO): Promise<string>{
+      return await this.appService.mintTokens(body.address, body.amount)
   }
-
 }

@@ -7,9 +7,9 @@ type Props = {
 
 const MintTokenButton: React.FC<Props> = ({ address }) => {
     const [isMinting, setIsMinting] = useState(false);
-    const [message, setMessage] = useState('');
+    const [TxHash, setTxHash] = useState('');
     const [shouldMint, setShouldMint] = useState(false);
-    const [amount, setAmount] = useState(0);
+    const [amount, setAmount] = useState<Number>(0);
 
     useEffect(() => {
         if (shouldMint) {
@@ -18,17 +18,15 @@ const MintTokenButton: React.FC<Props> = ({ address }) => {
                 try {
                     const response = await fetch('http://localhost:3001/mint-tokens', {
                         method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
-                        body: JSON.stringify({ address, amount: 1 }),
+                        headers: {'Content-Type': 'application/json'},
+                        body: JSON.stringify({ "address": address, "amount": amount}),
                     });
-  
-                    const data = await response.json();
-                    if (data.hash) {
-                        setMessage('Successfully Minted');
+                    const hash = await response.text();
+                    if (hash) {
+                        setTxHash(hash);
                     } else {
                         alert("Failed ");
+                        console.error("Error minting tokens:", hash);
                     }
                 } catch (error) {
                     alert("error minting tokens.");
@@ -43,17 +41,16 @@ const MintTokenButton: React.FC<Props> = ({ address }) => {
     }, [shouldMint, address]);
     return (
         <div>
-            <input 
+            <input className={styles.input} 
                 type="number" 
                 placeholder="Amount" 
-                value={amount}
+                value={Number(amount)}
                 onChange={(e) => setAmount(Number(e.target.value))}
             />
             <button className={styles.button} onClick={() => setShouldMint(true)} disabled={isMinting}>
                 {isMinting ? 'Minting...' : 'Mint Tokens'}
             </button>
-            {message ? <p>Tokens minted successfully!</p> : <p></p>}
-            <p>{message}</p>
+            {TxHash ? <p>TxHash: {TxHash}</p> : <p></p>}
         </div>
     );
 };
