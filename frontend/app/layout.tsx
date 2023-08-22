@@ -1,24 +1,13 @@
 "use client";
-import { WagmiConfig, createConfig } from "wagmi";
-import { ConnectKitProvider, getDefaultConfig } from "connectkit";
+
+import { WagmiConfig } from "wagmi";
+import { ConnectKitProvider } from "connectkit";
+import { config } from "./connectWeb3";
 import Navbar from "@/components/instructionsComponent/navigation/navbar";
 import Footer from "@/components/instructionsComponent/navigation/footer";
 
-const config = createConfig(
-  getDefaultConfig({
-    // Required API Keys
-    alchemyId: process.env.ALCHEMY_API_KEY, // or infuraId
-    walletConnectProjectId: "demo",
 
-    // Required
-    appName: "You Create Web3 Dapp",
 
-    // Optional
-    appDescription: "Your App Description",
-    appUrl: "https://family.co", // your app's url
-    appIcon: "https://family.co/logo.png", // your app's logo,no bigger than 1024x1024px (max. 1MB)
-  })
-);
 
 export default function RootLayout({
   children,
