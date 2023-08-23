@@ -1,52 +1,69 @@
-import React, { useState } from 'react';
-import { useContractRead } from 'wagmi'
+import { useContractRead } from 'wagmi';
 import Ballot from '../../../specs/Ballot.json';
-import { promises } from 'dns';
-import { hexToString } from 'viem';
-import { fromAscii } from 'web3-utils';
+import React, { useEffect, useState } from 'react';
 
-export default function ProposalsComponent() {
-  type ProposalData = [string, BigInt];
-  const { data, isError, isLoading } = useContractRead({
-    address: '0x14d3f34208c82A3458f82Dd7CdBe5CE2bd9B39ce',
-    abi: Ballot.abi,
-    functionName: 'proposals',
-    args: [0],   
-  }) as { data: ProposalData, isError: boolean, isLoading: boolean };
-
-  if (isError) return <div> An error occurred </div>;
-  if (isLoading) return <div> Fetching result </div>;
-
-  // Decode the hex value
-  const decodedName1 = data[0].toString();
- const decodedName= parseInt(decodedName1);
+function generateDivWithData(name: string, value: any) {
   return (
-    <div>
-      <p>Name: {data[0]}</p>
-      <p>Value: {data[1].toString()}</p>
+    <div key={name}>
+      <p>Name: {name}</p>
+      <p>Value: {value.toString()}</p>
     </div>
   );
 }
 
-export  function ProposalsComponent2() {
-  type ProposalData = [string, BigInt];
-  const { data, isError, isLoading } = useContractRead({
-    address: '0x14d3f34208c82A3458f82Dd7CdBe5CE2bd9B39ce',
-    abi: Ballot.abi,
-    functionName: 'proposals',
-    args: [1],   
-  }) as { data: ProposalData, isError: boolean, isLoading: boolean };
+function Proposals() {
+  // track html answer and when its prepared 
+  const [jsxElements, setJsxElements] = useState<JSX.Element[]>([]);
+  const [done, setDone] = useState(false);
 
-  if (isError) return <div> An error occurred </div>;
-  if (isLoading) return <div> Fetching result </div>;
+  // track proposals
+  const [proposalsList, setProposalsList] = useState<any[]>([]);
 
-  // Decode the hex value
-  const decodedName1 = data[0].toString();
-  const decodedName = parseInt(decodedName1);
+  // track index 
+  const [index, setIndex] = useState<number>(0);
+
+  // track end of loop
+  const [isLoading, setIsLoading] = useState(true);
+
+
+  useEffect(() => {
+    if (!isLoading) {
+      type ProposalData = [string, number];
+      const fetchData = async () => {
+        const { data, isError, isLoading } = await useContractRead({
+          address: '0x14d3f34208c82A3458f82Dd7CdBe5CE2bd9B39ce',
+          abi: Ballot.abi,
+          functionName: 'proposals',
+          args: [index],
+        }) as { data: ProposalData; isError: boolean; isLoading: boolean };
+        console.log(data, isError, isLoading);
+        if (isError) setIsLoading(false);
+        if (data) {
+          // when to jump to next proposal request 
+          setProposalsList((prevList) => [...prevList, data]);
+          setIndex((prevIndex) => prevIndex + 1);
+        }
+      };
+
+      fetchData();
+    }
+  }, [index, isLoading]);
+
+  useEffect(() => {
+    if (!isLoading && proposalsList.length > 0) {
+      setJsxElements(proposalsList.map(([name, value]) => generateDivWithData(name, value)));
+      setDone(true);
+    }
+  }, [isLoading, proposalsList]);
+
   return (
     <div>
-      <p>Name: {data[0]}</p>
-      <p>Value: {data[1].toString()}</p>
+      {!done ? <p>Loading... </p> : jsxElements}
+      {index}
+      {isLoading}
+      {proposalsList}
     </div>
   );
 }
+
+export default Proposals;

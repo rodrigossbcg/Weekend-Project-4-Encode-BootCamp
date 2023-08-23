@@ -5,8 +5,6 @@ import TransferTokensComponent from "../instructionsComponent/navigation/extra_c
 import MintTokenButton from "../instructionsComponent/navigation/extra_components/MintComponent"
 import DelegateComponent from "../instructionsComponent/navigation/extra_components/DelegateComponent"
 import ProposalsComponent from "../instructionsComponent/navigation/extra_components/ProposalsComponent"
-import ProposalsComponent2 from "../instructionsComponent/navigation/extra_components/ProposalsComponent"
-
 import VoteComponent from "../instructionsComponent/VoteComponent"
 
 
@@ -24,7 +22,6 @@ export default function InstructionsComponent() {
         <h1>Ballot</h1>
         <WalletInfo></WalletInfo>
         <ProposalsComponent></ProposalsComponent>
-        <ProposalsComponent2></ProposalsComponent2>
         <VoteComponent></VoteComponent>
       </div>
     </div>
