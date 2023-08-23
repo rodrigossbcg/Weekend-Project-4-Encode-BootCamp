@@ -15,7 +15,7 @@ import VoteComponent from "../instructionsComponent/VoteComponent"
 
 export default function InstructionsComponent() {
   return (
-    <div className={styles.row}>
+    <div className={styles.container}>
       <div className={styles.column}>
         <h1>ERC20Votes</h1>
         <ContractInfo></ContractInfo>
@@ -63,13 +63,10 @@ function ContractInfo() {
 
 function WalletInfo() {
   const { address, isConnecting, isDisconnected } = useAccount();
-  const { chain } = useNetwork();
-
   if (address) {
     return (
       <div>
         <p>Address: {address}</p>
-        <p>Connected to the network {chain?.name}</p>
         <WalletBalance address={address}></WalletBalance>
       </div>
     );

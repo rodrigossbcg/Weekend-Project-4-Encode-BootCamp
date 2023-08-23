@@ -8,22 +8,22 @@ import { publicProvider } from 'wagmi/providers/public'
 import { InjectedConnector } from 'wagmi/connectors/injected'
 
 function VoteComponent() {
-  const [selectedProposal, setSelectedProposal] = useState<number | null>(null);
-  const [amount, setAmount] = useState<string>('');
+    const [selectedProposal, setSelectedProposal] = useState<number | null>(null);
+    const [amount, setAmount] = useState<Number>(0);
 
-  // Prepare the contract write configuration for the `vote` function
-  const { config, error: prepareError } = usePrepareContractWrite({
-      address: '0xecb504d39723b0be0e3a9aa33d646642d1051ee1',
-      abi: Ballot.abi,
-      functionName: 'vote',
-      args: [selectedProposal, parseInt(amount)],  // Arguments for the vote function
-  });
+    // Prepare the contract write configuration for the `vote` function
+    const { config, error: prepareError } = usePrepareContractWrite({
+        address: '0xecb504d39723b0be0e3a9aa33d646642d1051ee1',
+        abi: Ballot.abi,
+        functionName: 'vote',
+        args: [selectedProposal, amount],  // Arguments for the vote function
+    });
 
-  const { write, error: writeError } = useContractWrite(config);
-
-  return (
+    const { write, error: writeError } = useContractWrite(config);
+    // Show Proposals avaliable to be voted 
+    return (
       <div>
-          <h2>Vote on a Proposal</h2>
+          <h3>Vote on a Proposal</h3>
 
           <label>Select Proposal:</label>
           <select onChange={(e) => setSelectedProposal(Number(e.target.value))}>

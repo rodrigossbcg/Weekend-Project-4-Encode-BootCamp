@@ -42,7 +42,7 @@ export  function ProposalsComponent2() {
 
   // Decode the hex value
   const decodedName1 = data[0].toString();
- const decodedName= parseInt(decodedName1);
+  const decodedName = parseInt(decodedName1);
   return (
     <div>
       <p>Name: {data[0]}</p>
