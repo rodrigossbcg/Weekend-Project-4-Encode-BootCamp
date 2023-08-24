@@ -1,14 +1,26 @@
 import { useContractRead } from 'wagmi';
 import Ballot from '../../../specs/Ballot.json';
 import React, { useEffect, useState } from 'react';
+import styles from "../../instructionsComponent.module.css";
 
 function generateDivWithData(name: string, value: any) {
+  
+  const byteArray = name
+  .match(/.{1,2}/g)
+  ?.map(byte => parseInt(byte, 16));
+
+if (byteArray) {
+  const byteArrayUint8 = new Uint8Array(byteArray);
+  const textDecoder = new TextDecoder('ascii');
+  const stringValue = textDecoder.decode(byteArrayUint8);
+
   return (
-    <div key={name}>
-      <p>Name: {name}</p>
-      <p>Value: {value.toString()}</p>
-    </div>
+      <tr className={styles.tr} key={name}>
+        <td className={styles.td}>{stringValue}</td>
+        <td className={styles.td}>{value.toString()}</td>
+      </tr>
   );
+}
 }
 
 function Proposals() {
@@ -46,9 +58,13 @@ function Proposals() {
   }, [isLoading, proposalsList]);
 
   return (
-    <div>
+    <table className={styles.table}>
+      <tr className={styles.tr}>
+        <th className={styles.th}>Proposal</th>
+        <th className={styles.th}>Number of votes</th>
+      </tr>
       {!done ? <p>Loading... </p> : jsxElements}
-    </div>
+    </table>
   );
 }
 

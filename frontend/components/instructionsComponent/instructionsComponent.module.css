@@ -77,3 +77,23 @@ line-height: 28px;
 	border-radius: 4px;
 	box-sizing: border-box;
 }
+
+.table {
+	font-family: arial, sans-serif;
+	border-collapse: collapse;
+	width: 100%;
+  }
+  
+.th {
+	background-color: darkblue;
+	color: white;
+	border: 2px solid darkblue;
+	text-align: left;
+	padding: 8px;
+}
+
+.td {
+	border: 2px solid darkblue;
+	text-align: left;
+	padding: 8px;
+}
